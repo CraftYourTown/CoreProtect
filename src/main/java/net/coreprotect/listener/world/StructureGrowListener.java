@@ -22,14 +22,14 @@ import net.coreprotect.consumer.Queue;
 public final class StructureGrowListener extends Queue implements Listener {
 
     @EventHandler(priority = EventPriority.MONITOR)
-    protected void onStructureGrow(StructureGrowEvent event) {
+    private void onStructureGrow(StructureGrowEvent event) {
         // Event that is called when an organic structure attempts to grow (Sapling -> Tree), (Mushroom -> Huge Mushroom), naturally or using bonemeal.
         TreeType treeType = event.getSpecies();
         String user = "#tree";
         int tree = 1;
 
         // Skip logging for bad event calls
-        if (treeType == null || event.isFromBonemeal()) {
+        if (event.isFromBonemeal()) {
             return;
         }
 
@@ -58,10 +58,7 @@ public final class StructureGrowListener extends Queue implements Listener {
 
                 List<BlockState> structureBlocks = new ArrayList<>(blocks);
                 structureBlocks.removeIf(replacedBlock -> replacedBlock.getY() > location.getBlockY());
-                for (int i = 0; i < structureBlocks.size(); i++) {
-                    BlockState replacedBlock = structureBlocks.get(i);
-                    structureBlocks.set(i, replacedBlock.getBlock().getState());
-                }
+                structureBlocks.replaceAll(block -> block.getBlock().getState());
 
                 int replacedListSize = structureBlocks.size();
                 structureBlocks.addAll(blocks);

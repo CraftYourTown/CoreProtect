@@ -66,50 +66,9 @@ public class ContainerLogger extends Queue {
                 return;
             }
 
-            // Check if this is a dispenser with no actual changes
-            if (player.equals("#dispenser") && ItemUtils.compareContainers(oldInventory, newInventory)) {
-                // No changes detected, mark this dispenser in the dispenserNoChange map
-                // Extract the location key from the loggingContainerId
-                // Format: #dispenser.x.y.z
-                String[] parts = loggingContainerId.split("\\.");
-                if (parts.length >= 4) {
-                    int x = Integer.parseInt(parts[1]);
-                    int y = Integer.parseInt(parts[2]);
-                    int z = Integer.parseInt(parts[3]);
-
-                    // Create the location key
-                    String locationKey = location.getWorld().getUID().toString() + "." + x + "." + y + "." + z;
-
-                    // Check if we have pending event details for this dispenser
-                    Object[] pendingEvent = ConfigHandler.dispenserPending.remove(locationKey);
-                    if (pendingEvent != null) {
-                        // We have the exact event details, use them to mark this event as unchanged
-                        String eventKey = (String) pendingEvent[0];
-
-                        // Get or create the inner map for this location
-                        ConfigHandler.dispenserNoChange.computeIfAbsent(locationKey, k -> new ConcurrentHashMap<>()).put(eventKey, System.currentTimeMillis());
-                    }
-                }
-                return;
-            }
-
-            // If we reach here, the dispenser event resulted in changes
-            // Remove any pending event for this dispenser
+            // Don't log dispenser transactions
             if (player.equals("#dispenser")) {
-                String[] parts = loggingContainerId.split("\\.");
-                if (parts.length >= 4) {
-                    int x = Integer.parseInt(parts[1]);
-                    int y = Integer.parseInt(parts[2]);
-                    int z = Integer.parseInt(parts[3]);
-
-                    String locationKey = location.getWorld().getUID().toString() + "." + x + "." + y + "." + z;
-
-                    // Remove the pending event since it resulted in changes
-                    ConfigHandler.dispenserPending.remove(locationKey);
-
-                    // Clear any existing dispenserNoChange entries for this location
-                    ConfigHandler.dispenserNoChange.remove(locationKey);
-                }
+                return;
             }
 
             List<ItemStack[]> forceList = ConfigHandler.forceContainer.get(loggingContainerId);

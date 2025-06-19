@@ -5,10 +5,8 @@ import org.bukkit.plugin.PluginManager;
 import net.coreprotect.CoreProtect;
 import net.coreprotect.listener.block.BlockBreakListener;
 import net.coreprotect.listener.block.BlockBurnListener;
-import net.coreprotect.listener.block.BlockDispenseListener;
 import net.coreprotect.listener.block.BlockExplodeListener;
 import net.coreprotect.listener.block.BlockFadeListener;
-import net.coreprotect.listener.block.BlockFertilizeListener;
 import net.coreprotect.listener.block.BlockFormListener;
 import net.coreprotect.listener.block.BlockFromToListener;
 import net.coreprotect.listener.block.BlockIgniteListener;
@@ -54,7 +52,6 @@ import net.coreprotect.listener.world.ChunkPopulateListener;
 import net.coreprotect.listener.world.LeavesDecayListener;
 import net.coreprotect.listener.world.PortalCreateListener;
 import net.coreprotect.listener.world.StructureGrowListener;
-import net.coreprotect.paper.listener.BlockPreDispenseListener;
 import net.coreprotect.paper.listener.PaperChatListener;
 
 public final class ListenerHandler {
@@ -63,22 +60,11 @@ public final class ListenerHandler {
 
         PluginManager pluginManager = plugin.getServer().getPluginManager();
 
-        // Paper Listeners / Fallbacks (Block Listeners)
-        try {
-            Class.forName("io.papermc.paper.event.block.BlockPreDispenseEvent"); // Paper 1.16+
-            pluginManager.registerEvents(new BlockPreDispenseListener(), plugin);
-        }
-        catch (Exception e) {
-            BlockPreDispenseListener.useBlockPreDispenseEvent = false;
-        }
-
         // Block Listeners
         pluginManager.registerEvents(new BlockBreakListener(), plugin);
         pluginManager.registerEvents(new BlockBurnListener(), plugin);
-        pluginManager.registerEvents(new BlockDispenseListener(), plugin);
         pluginManager.registerEvents(new BlockExplodeListener(), plugin);
         pluginManager.registerEvents(new BlockFadeListener(), plugin);
-        pluginManager.registerEvents(new BlockFertilizeListener(), plugin);
         pluginManager.registerEvents(new BlockFormListener(), plugin);
         pluginManager.registerEvents(new BlockFromToListener(), plugin);
         pluginManager.registerEvents(new BlockIgniteListener(), plugin);
