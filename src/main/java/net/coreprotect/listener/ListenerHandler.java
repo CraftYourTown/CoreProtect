@@ -61,15 +61,6 @@ public final class ListenerHandler {
 
         PluginManager pluginManager = plugin.getServer().getPluginManager();
 
-        // Paper Listeners / Fallbacks (Block Listeners)
-        try {
-            Class.forName("io.papermc.paper.event.block.BlockPreDispenseEvent"); // Paper 1.16+
-            pluginManager.registerEvents(new BlockPreDispenseListener(), plugin);
-        }
-        catch (Exception e) {
-            BlockPreDispenseListener.useBlockPreDispenseEvent = false;
-        }
-
         try {
             Class.forName("io.papermc.paper.event.entity.ItemTransportingEntityValidateTargetEvent"); // Paper 1.21.10+
             pluginManager.registerEvents(new CopperGolemChestListener(plugin), plugin);
