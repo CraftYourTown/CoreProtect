@@ -52,6 +52,7 @@ import net.coreprotect.listener.world.ChunkPopulateListener;
 import net.coreprotect.listener.world.LeavesDecayListener;
 import net.coreprotect.listener.world.PortalCreateListener;
 import net.coreprotect.listener.world.StructureGrowListener;
+import net.coreprotect.paper.listener.CopperGolemChestListener;
 import net.coreprotect.paper.listener.PaperChatListener;
 
 public final class ListenerHandler {
@@ -59,6 +60,23 @@ public final class ListenerHandler {
     public ListenerHandler(CoreProtect plugin) {
 
         PluginManager pluginManager = plugin.getServer().getPluginManager();
+
+        // Paper Listeners / Fallbacks (Block Listeners)
+        try {
+            Class.forName("io.papermc.paper.event.block.BlockPreDispenseEvent"); // Paper 1.16+
+            pluginManager.registerEvents(new BlockPreDispenseListener(), plugin);
+        }
+        catch (Exception e) {
+            BlockPreDispenseListener.useBlockPreDispenseEvent = false;
+        }
+
+        try {
+            Class.forName("io.papermc.paper.event.entity.ItemTransportingEntityValidateTargetEvent"); // Paper 1.21.10+
+            pluginManager.registerEvents(new CopperGolemChestListener(plugin), plugin);
+        }
+        catch (Exception e) {
+            // Ignore registration failures to remain compatible with older servers.
+        }
 
         // Block Listeners
         pluginManager.registerEvents(new BlockBreakListener(), plugin);
